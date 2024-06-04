@@ -31,11 +31,8 @@
                 <tr>
                     {% for column in columns %}
                         <th>
-                            <select>
-                                <option value=""></option>
-                                {% for row in data %}
-                                    <option value="{{ row[column] }}">{{ row[column] }}</option>
-                                {% endfor %}
+                            <select class="filter-select">
+                                <option value="">All</option>
                             </select>
                         </th>
                     {% endfor %}
@@ -66,8 +63,8 @@
                 initComplete: function () {
                     this.api().columns().every(function () {
                         var column = this;
-                        var select = $('<select><option value=""></option></select>')
-                            .appendTo($(column.footer()).empty())
+                        var select = $('<select><option value="">All</option></select>')
+                            .appendTo($(column.header()).empty())
                             .on('change', function () {
                                 var val = $.fn.dataTable.util.escapeRegex(
                                     $(this).val()
