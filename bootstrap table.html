@@ -23,12 +23,32 @@
     <div class="container mt-5">
         <table id="example" class="table table-striped table-bordered">
             <thead>
-                <tr id="table-header">
-                    <!-- Headers will be dynamically inserted here -->
+                <tr>
+                    {% for column in columns %}
+                        <th>{{ column }}</th>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    {% for column in columns %}
+                        <th>
+                            <select>
+                                <option value=""></option>
+                                {% for row in data %}
+                                    <option value="{{ row[column] }}">{{ row[column] }}</option>
+                                {% endfor %}
+                            </select>
+                        </th>
+                    {% endfor %}
                 </tr>
             </thead>
             <tbody>
-                <!-- Data will be loaded via AJAX -->
+                {% for row in data %}
+                    <tr>
+                        {% for column in columns %}
+                            <td>{{ row[column] }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>
@@ -38,50 +58,30 @@
     <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
     <script>
         $(document).ready(function() {
-            $.ajax({
-                url: "/data",
-                method: "GET",
-                success: function(response) {
-                    const columns = response.columns;
-                    const data = response.data;
+            var table = $('#example').DataTable({
+                "scrollX": true,
+                "searching": true,
+                "ordering": true,
+                "paging": false,
+                initComplete: function () {
+                    this.api().columns().every(function () {
+                        var column = this;
+                        var select = $('<select><option value=""></option></select>')
+                            .appendTo($(column.footer()).empty())
+                            .on('change', function () {
+                                var val = $.fn.dataTable.util.escapeRegex(
+                                    $(this).val()
+                                );
 
-                    // Append table headers
-                    columns.forEach(column => {
-                        $('#table-header').append(`<th>${column}</th>`);
-                    });
-
-                    // Initialize DataTable
-                    $('#example').DataTable({
-                        "scrollX": true,
-                        "searching": true,
-                        "ordering": true,
-                        "paging": false,
-                        data: data,
-                        columns: columns.map(column => ({ data: column })),
-                        initComplete: function () {
-                            this.api().columns().every(function () {
-                                var column = this;
-                                var select = $('<select><option value=""></option></select>')
-                                    .appendTo($(column.header()).empty())
-                                    .on('change', function () {
-                                        var val = $.fn.dataTable.util.escapeRegex(
-                                            $(this).val()
-                                        );
-
-                                        column
-                                            .search(val ? '^' + val + '$' : '', true, false)
-                                            .draw();
-                                    });
-
-                                column.data().unique().sort().each(function (d, j) {
-                                    select.append('<option value="' + d + '">' + d + '</option>')
-                                });
+                                column
+                                    .search(val ? '^' + val + '$' : '', true, false)
+                                    .draw();
                             });
-                        }
+
+                        column.data().unique().sort().each(function (d, j) {
+                            select.append('<option value="' + d + '">' + d + '</option>')
+                        });
                     });
-                },
-                error: function(error) {
-                    console.error("Error fetching data:", error);
                 }
             });
         });
