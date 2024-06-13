@@ -1,0 +1,38 @@
+<div class="form-group">
+                <label>LOB Markets</label>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="lobMarkets" id="lobMarketsYes" value="Yes" checked>
+                    <label class="form-check-label" for="lobMarketsYes">Yes</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="lobMarkets" id="lobMarketsNo" value="No">
+                    <label class="form-check-label" for="lobMarketsNo">No</label>
+                </div>
+            </div>
+
+def submit():
+    # Retrieve form data
+    compare_run = request.form.get('compareRun') or 'default_compare'
+    current_run = request.form.get('currentRun') or 'default_current'
+    measure = request.form.get('measures') or 'default_measure'
+    lob_markets = request.form.get('lobMarkets') or 'default_lob'
+
+    # Define the file name
+    predefined_name = f"Comparison_{compare_run}_{current_run}_{measure}_{lob_markets}.xlsx"
+
+    # Create a data frame
+    data = {
+        'Compare Run': [compare_run],
+        'Current Run': [current_run],
+        'Measures': [measure],
+        'LOB Markets': [lob_markets]
+    }
+    df = pd.DataFrame(data)
+
+    # Save data frame to a temporary file
+    temp_file = tempfile.NamedTemporaryFile(delete=False, suffix='.xlsx')
+    df.to_excel(temp_file.name, index=False)
+    temp_file.close()
+
+    # Send the file to the client with the predefined name
+    return send_file(temp_file.name, as_attachment=True, download_name=predefined_name, mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
