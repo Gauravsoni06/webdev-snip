@@ -86,3 +86,23 @@ def submit():
         width: 3rem;
         height: 3rem;
     }
+
+
+ temp_dir = tempfile.gettempdir()
+    file_path = os.path.join(temp_dir, f'Comparison_{compare_run}_{current_run}_{measures}.xlsx')
+    df.to_excel(file_path, index=False)
+
+    @after_this_request
+    def remove_file(response):
+        try:
+            os.remove(file_path)
+        except Exception as error:
+            app.logger.error("Error removing or closing downloaded file handle", error)
+        return response
+
+    return send_file(file_path, as_attachment=True, download_name=f'Comparison_{compare_run}_{current_run}_{measures}.xlsx')
+
+
+function hideLoadingScreen() {
+        document.getElementById('loading-screen').style.display = 'none';
+    }
