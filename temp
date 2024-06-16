@@ -135,3 +135,30 @@ function hideLoadingScreen() {
         document.getElementById('loading-screen').style.display = 'none';
     }
 </script>
+
+
+
+<iframe id="file-download" name="file-download" style="display: none;" onload="hideLoadingScreen()"></iframe>
+
+<script>
+    function clearForm(formId) {
+        document.getElementById(formId).reset();
+    }
+
+    function showLoadingScreen() {
+        document.getElementById('loading-screen').style.display = 'flex';
+    }
+
+    function hideLoadingScreen() {
+        document.getElementById('loading-screen').style.display = 'none';
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const forms = document.querySelectorAll('form');
+        forms.forEach(form => {
+            form.addEventListener('submit', function(event) {
+                showLoadingScreen();
+            });
+        });
+    });
+</script>
