@@ -106,3 +106,32 @@ def submit():
 function hideLoadingScreen() {
         document.getElementById('loading-screen').style.display = 'none';
     }
+
+
+<iframe id="file-download" name="file-download" style="display: none;" onload="hideLoadingScreen()"></iframe>
+
+<script>
+    function clearForm(formId) {
+        document.getElementById(formId).reset();
+    }
+
+    function showLoadingScreen(event) {
+        document.getElementById('loading-screen').style.display = 'flex';
+        
+        // Submit the form using JavaScript to control the file download
+        event.preventDefault();
+        const form = event.target;
+        
+        const formData = new FormData(form);
+        const params = new URLSearchParams(formData).toString();
+        const actionUrl = form.action + '?' + params;
+        
+        // Create an iframe to handle the file download
+        const iframe = document.getElementById('file-download');
+        iframe.src = actionUrl;
+    }
+
+    function hideLoadingScreen() {
+        document.getElementById('loading-screen').style.display = 'none';
+    }
+</script>
