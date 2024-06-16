@@ -162,3 +162,50 @@ function hideLoadingScreen() {
         });
     });
 </script>
+
+<script>
+    function clearForm(formId) {
+        document.getElementById(formId).reset();
+    }
+
+    function showLoadingScreen() {
+        document.getElementById('loading-screen').style.display = 'flex';
+    }
+
+    function hideLoadingScreen() {
+        document.getElementById('loading-screen').style.display = 'none';
+    }
+
+    async function submitForm(event) {
+        event.preventDefault();
+        showLoadingScreen();
+
+        const form = event.target;
+        const formData = new FormData(form);
+
+        try {
+            const response = await fetch(form.action, {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = 'Comparison_File.xlsx'; // Change this to your desired file name
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+            } else {
+                console.error('File download failed');
+            }
+        } catch (error) {
+            console.error('Error submitting form:', error);
+        } finally {
+            hideLoadingScreen();
+        }
+    }
+</script>
