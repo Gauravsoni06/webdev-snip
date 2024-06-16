@@ -36,3 +36,53 @@ def submit():
 
     # Send the file to the client with the predefined name
     return send_file(temp_file.name, as_attachment=True, download_name=predefined_name, mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+
+
+
+#at top of html compare
+{% block content %}
+<div id="loading-screen" style="display: none;">
+    <div class="spinner-border" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+</div>
+
+<script>
+    function clearForm(formId) {
+        document.getElementById(formId).reset();
+    }
+
+    function showLoadingScreen() {
+        document.getElementById('loading-screen').style.display = 'block';
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const forms = document.querySelectorAll('form');
+        forms.forEach(form => {
+            form.addEventListener('submit', function(event) {
+                showLoadingScreen();
+            });
+        });
+    });
+</script>
+{% endblock %}
+
+
+
+#css
+ #loading-screen {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        background: rgba(255, 255, 255, 0.8);
+        z-index: 9999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .spinner-border {
+        width: 3rem;
+        height: 3rem;
+    }
