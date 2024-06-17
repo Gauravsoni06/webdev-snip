@@ -209,3 +209,156 @@ function hideLoadingScreen() {
         }
     }
 </script>
+
+
+updated
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compare File Generation</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        #loading {
+            display: none;
+            margin-top: 20px;
+        }
+        #confirmation-message {
+            display: none;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="container mt-5">
+    <h1>Compare File Generation</h1>
+    <div class="row">
+        <div class="col-md-4">
+            <h3>Section 1</h3>
+            <form id="form1" method="POST" action="/submit" onsubmit="handleFormSubmit(event)">
+                <div class="form-group">
+                    <label for="compareRun">Compare Run</label>
+                    <select class="form-control" id="compareRun" name="compareRun">
+                        {% for run in run_types %}
+                            <option value="{{ run }}">{{ run }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="currentRun">Current Run</label>
+                    <select class="form-control" id="currentRun" name="currentRun">
+                        {% for run in run_types %}
+                            <option value="{{ run }}">{{ run }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="measures">Measures</label>
+                    <select class="form-control" id="measures" name="measures">
+                        {% for measure in measures %}
+                            <option value="{{ measure }}">{{ measure }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>LOB Markets</label><br>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="lobMarkets" id="lobMarketsYes" value="Yes" checked>
+                        <label class="form-check-label" for="lobMarketsYes">Yes</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="lobMarkets" id="lobMarketsNo" value="No">
+                        <label class="form-check-label" for="lobMarketsNo">No</label>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary" id="submit-button">Submit</button>
+                <button type="button" class="btn btn-secondary" onclick="clearForm('form1')">Clear</button>
+            </form>
+            <div id="loading" class="alert alert-info">
+                Processing...
+            </div>
+            <div id="confirmation-message" class="alert alert-success">
+                File has been processed successfully.
+            </div>
+        </div>
+        <!-- Repeat for Section 2 and Section 3 -->
+    </div>
+</div>
+
+<script>
+    function clearForm(formId) {
+        document.getElementById(formId).reset();
+    }
+
+    function handleFormSubmit(event) {
+        event.preventDefault();
+        const form = document.getElementById('form1');
+        const submitButton = document.getElementById('submit-button');
+        const loadingIndicator = document.getElementById('loading');
+        const confirmationMessage = document.getElementById('confirmation-message');
+
+        submitButton.disabled = true;
+        loadingIndicator.style.display = 'block';
+        confirmationMessage.style.display = 'none';
+
+        fetch(form.action, {
+            method: 'POST',
+            body: new FormData(form)
+        })
+        .then(response => response.json())
+        .then(data => {
+            loadingIndicator.style.display = 'none';
+            confirmationMessage.style.display = 'block';
+            submitButton.disabled = false;
+            clearForm('form1');
+        })
+        .catch(error => {
+            loadingIndicator.style.display = 'none';
+            alert('An error occurred. Please try again.');
+            submitButton.disabled = false;
+        });
+    }
+</script>
+</body>
+</html>
+----------------------------------------------------------------
+from flask import Flask, render_template, request, jsonify
+import pandas as pd
+import os
+
+app = Flask(__name__)
+
+@app.route('/')
+def index():
+    run_types = ['Run 1', 'Run 2', 'Run 3']
+    measures = ['Measure 1', 'Measure 2', 'Measure 3']
+    return render_template('compare.html', run_types=run_types, measures=measures)
+
+@app.route('/submit', methods=['POST'])
+def submit():
+    compare_run = request.form.get('compareRun')
+    current_run = request.form.get('currentRun')
+    measures = request.form.get('measures')
+    lob_markets = request.form.get('lobMarkets')
+
+    # Dummy data
+    data = {
+        'Compare Run': [compare_run],
+        'Current Run': [current_run],
+        'Measures': [measures],
+        'LOB Markets': [lob_markets]
+    }
+    df = pd.DataFrame(data)
+
+    file_name = f'Comparison_{compare_run}_{current_run}_{measures}.xlsx'
+    file_path = os.path.join('/path/to/save', file_name)
+    df.to_excel(file_path, index=False)
+
+    return jsonify({"status": "success", "message": "File has been processed successfully."})
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
