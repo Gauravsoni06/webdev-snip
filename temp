@@ -1,4 +1,22 @@
- <style>
+ select:focus {
+            border: 2px solid #6a1b9a;
+            box-shadow: none;
+        }
+        .custom-select {
+            position: relative;
+        }
+        .custom-select select {
+            border: 2px solid #6a1b9a;
+            box-shadow: none;
+        }
+        .custom-select select option {
+            border-bottom: 1px solid #6a1b9a;
+        }
+        .custom-select select {
+            max-height: 5px; /* Adjust as needed */
+            overflow-y: auto;
+
+<style>
         #loading {
             display: none;
             margin-top: 20px;
