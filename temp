@@ -1,4 +1,75 @@
- select:focus {
+To set the width of the buttons while ensuring they are on the same line, you can add a custom class or inline styles to specify the width. Here's an example using Bootstrap classes and custom CSS:
+
+### HTML with Inline Styles
+
+```html
+<div class="d-flex justify-content-center">
+  <button class="btn btn-primary me-2" type="button" style="width: 150px;">Button</button>
+  <button class="btn btn-primary" type="button" style="width: 150px;">Button</button>
+</div>
+```
+
+### HTML with Custom CSS
+
+1. **HTML:**
+
+```html
+<div class="d-flex justify-content-center custom-button-container">
+  <button class="btn btn-primary" type="button">Button</button>
+  <button class="btn btn-primary" type="button">Button</button>
+</div>
+```
+
+2. **CSS:**
+
+```css
+.custom-button-container .btn {
+  width: 150px; /* Set the width as needed */
+  margin-right: 10px; /* Adjust the margin as needed */
+}
+
+.custom-button-container .btn:last-child {
+  margin-right: 0; /* Remove margin from the last button */
+}
+```
+
+### Explanation:
+
+- **Inline Styles:** Directly set the width of each button using the `style` attribute. This is a quick and easy method.
+- **Custom CSS:** Use a custom class to define the width and spacing for the buttons. This method is more scalable and maintainable, especially if you have multiple buttons or want to reuse the styling.
+
+### Example with Bootstrap and Custom CSS
+
+Here’s how you can implement this with Bootstrap classes and custom CSS for better organization:
+
+1. **HTML:**
+
+```html
+<div class="d-flex justify-content-center custom-button-container">
+  <button class="btn btn-primary" type="button">Button</button>
+  <button class="btn btn-primary" type="button">Button</button>
+</div>
+```
+
+2. **CSS:**
+
+```css
+.custom-button-container .btn {
+  width: 150px; /* Set the width as needed */
+  margin-right: 10px; /* Adjust the margin as needed */
+}
+
+.custom-button-container .btn:last-child {
+  margin-right: 0; /* Remove margin from the last button */
+}
+```
+
+This approach uses the Bootstrap `d-flex` class to ensure the buttons are on the same line and custom CSS to control their width and spacing. Adjust the `width` and `margin-right` values as needed for your design.
+
+
+
+
+select:focus {
             border: 2px solid #6a1b9a;
             box-shadow: none;
         }
