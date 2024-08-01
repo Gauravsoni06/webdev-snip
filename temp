@@ -1,3 +1,42 @@
+<table class="table table-hover">
+          <thead class="thead-dark">
+            <tr>
+              <th scope="col">Check ID</th>
+              <th scope="col">Description</th>
+              <th scope="col">Status</th>
+              <th scope="col">Timestamp</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">1</th>
+              <td>Check database connection</td>
+              <td><span class="badge badge-success">Passed</span></td>
+              <td>2024-08-01 10:00:00</td>
+            </tr>
+            <tr>
+              <th scope="row">2</th>
+              <td>Check API response</td>
+              <td><span class="badge badge-danger">Failed</span></td>
+              <td>2024-08-01 10:05:00</td>
+            </tr>
+            <tr>
+              <th scope="row">3</th>
+              <td>Check disk space</td>
+              <td><span class="badge badge-warning">Warning</span></td>
+              <td>2024-08-01 10:10:00</td>
+            </tr>
+            <tr>
+              <th scope="row">4</th>
+              <td>Check memory usage</td>
+              <td><span class="badge badge-success">Passed</span></td>
+              <td>2024-08-01 10:15:00</td>
+            </tr>
+          </tbody>
+        </table>
+
+
+
 To set the width of the buttons while ensuring they are on the same line, you can add a custom class or inline styles to specify the width. Here's an example using Bootstrap classes and custom CSS:
 
 ### HTML with Inline Styles
